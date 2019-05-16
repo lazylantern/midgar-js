@@ -1,14 +1,14 @@
 class Event {
-  constructor(screen, source, type, date) {
+  constructor(screen, source, type, timestamp) {
     this.screen = screen;
     this.source = source;
     this.type = type;
-    this.date = date;
+    this.timestamp = timestamp;
   }
 }
 
 class MidgarApi {
-    BASE_URL = 'http://midgar-flask.herokuapp.com/api';
+    BASE_URL = 'https://midgar-flask.herokuapp.com/api';
 
     constructor(appId) {
       this.appId = appId;
@@ -66,7 +66,7 @@ class MidgarManager {
             this.hasBeenRemotelyEnabled = true;
             const self = this;
             this.timerId = setInterval(() => {
-              const batch = self.events.splice(MidgarManager.MAX_UPLOAD_BATCH_SIZE);
+              const batch = self.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
               self.api.uploadBatch(batch).then(
                 (uploadResponse) => {
                   if (__DEV__) {
