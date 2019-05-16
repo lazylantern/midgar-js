@@ -64,7 +64,21 @@ class MidgarManager {
         (response) => {
           if (response.ok) {
             this.hasBeenRemotelyEnabled = true;
-            this.timerId = setInterval(this.processBatch, MidgarManager.UPLOAD_PERIOD_MS);
+            const self = this;
+            this.timerId = setInterval(() => {
+              const batch = self.events.splice(MidgarManager.MAX_UPLOAD_BATCH_SIZE);
+              self.api.uploadBatch(batch).then(
+                (uploadResponse) => {
+                  if (__DEV__) {
+                    if (uploadResponse.ok) {
+                      console.log('Events successfully uploaded');
+                    } else {
+                      console.log('Something went wrong. Events got dropped.');
+                    }
+                  }
+                }
+              );
+            }, MidgarManager.UPLOAD_PERIOD_MS);
           }
         }
       );
@@ -84,21 +98,6 @@ class MidgarManager {
 
     createEvent(screen) {
       return new Event(screen, 'js', 'impression', new Date().getTime());
-    }
-
-    processBatch() {
-      const batch = this.events.splice(MidgarManager.MAX_UPLOAD_BATCH_SIZE);
-      this.api.uploadBatch(batch).then(
-        (response) => {
-          if (__DEV__) {
-            if (response.ok) {
-              console.log('Events successfully uploaded');
-            } else {
-              console.log('Something went wrong. Events got dropped.');
-            }
-          }
-        }
-      );
     }
 }
 
