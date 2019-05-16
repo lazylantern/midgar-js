@@ -52,7 +52,7 @@ class MidgarManager {
 
   events = [];
 
-  hasBeenRemotelyEnabled = false;
+  hasBeenRemotelyEnabled = null;
 
   constructor(appId) {
     this.appId = appId;
@@ -93,22 +93,21 @@ class MidgarManager {
   }
 
   trackScreen(screen) {
+    if (this.isAllowedToCollectEvents()) {
       this.events.push(this.createEvent(screen));
+    }
   }
 
-  createEvent(screen) {
-    return new Event(screen, 'js', 'impression', new Date().getTime());
-  }
-
-  shouldTrackScreen(prevState, currentState) {
+  trackScreenFromRoute(prevState, currentState) {
+    if (!this.isAllowedToCollectEvents()) {
+      return false;
+    }
     const currentScreen = this.manager.getActiveRouteName(currentState);
     const prevScreen = this.manager.getActiveRouteName(prevState);
 
-    return prevScreen !== currentScreen;
-  }
-
-  trackScreenFromRoute(currentState) {
-    this.trackScreen(this.getActiveRouteName(currentState));
+    if (prevScreen !== currentScreen) {
+      this.trackScreen(this.getActiveRouteName(currentState));
+    }
   }
 
   getActiveRouteName(navigationState) {
@@ -121,6 +120,14 @@ class MidgarManager {
       return this.getActiveRouteName(route);
     }
     return route.routeName;
+  }
+
+  isAllowedToCollectEvents() {
+    return this.hasBeenRemotelyEnabled == null || this.hasBeenRemotelyEnabled === true;
+  }
+
+  createEvent(screen) {
+    return new Event(screen, 'js', 'impression', new Date().getTime());
   }
 }
 
@@ -135,12 +142,9 @@ export default class MidgarTracker {
     return this;
   }
 
-  // Only track screen if different from previous navigation state. Requires react-navigation
   trackScreen(prevState, currentState) {
     try {
-      if (this.manager.shouldTrackScreen(prevState, currentState)) {
-        this.manager.trackScreenFromRoute(currentState);
-      }
+      this.manager.trackScreenFromRoute(prevState, currentState);
     } catch (e) {
       console.error(e);
     }
