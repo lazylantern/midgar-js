@@ -67,17 +67,19 @@ class MidgarManager {
           const self = this;
           this.timerId = setInterval(() => {
             const batch = self.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
-            self.api.uploadBatch(batch).then(
-              (uploadResponse) => {
-                if (__DEV__) {
-                  if (uploadResponse.ok) {
-                    console.info('Events successfully uploaded');
-                  } else {
-                    console.info('Something went wrong. Events got dropped.');
+            if (batch.length > 0) {
+              self.api.uploadBatch(batch).then(
+                (uploadResponse) => {
+                  if (__DEV__) {
+                    if (uploadResponse.ok) {
+                      console.info('Events successfully uploaded');
+                    } else {
+                      console.info('Something went wrong. Events got dropped.');
+                    }
                   }
                 }
-              }
-            );
+              );
+            }
           }, MidgarManager.UPLOAD_PERIOD_MS);
         } else {
           this.stop();
