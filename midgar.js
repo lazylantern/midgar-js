@@ -99,6 +99,18 @@ class MidgarManager {
     createEvent(screen) {
       return new Event(screen, 'js', 'impression', new Date().getTime());
     }
+
+    getActiveRouteName(navigationState) {
+      if (!navigationState) {
+        return null;
+      }
+      const route = navigationState.routes[navigationState.index];
+      // dive into nested navigators
+      if (route.routes) {
+        return this.getActiveRouteName(route);
+      }
+      return route.routeName;
+    }
 }
 
 export default class MidgarTracker {
@@ -108,7 +120,18 @@ export default class MidgarTracker {
     return this;
   }
 
-  trackScreen(screen) {
+  // Only track screen if different from previous navigation state. Requires react-navigation
+  trackScreen(prevState, currentState) {
+    const currentScreen = this.manager.getActiveRouteName(currentState);
+    const prevScreen = this.manager.getActiveRouteName(prevState);
+
+    if (prevScreen !== currentScreen) {
+      this.manager.trackScreen(currentScreen);
+    }
+  }
+
+  // track screen with given name
+  forceTrackScreen(screen) {
     this.manager.trackScreen(screen);
   }
 
