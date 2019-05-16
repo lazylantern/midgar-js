@@ -102,8 +102,8 @@ class MidgarManager {
     if (!this.isAllowedToCollectEvents()) {
       return false;
     }
-    const currentScreen = this.manager.getActiveRouteName(currentState);
-    const prevScreen = this.manager.getActiveRouteName(prevState);
+    const currentScreen = this.getActiveRouteName(currentState);
+    const prevScreen = this.getActiveRouteName(prevState);
 
     if (prevScreen !== currentScreen) {
       this.trackScreen(this.getActiveRouteName(currentState));
