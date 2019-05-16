@@ -79,6 +79,8 @@ class MidgarManager {
               }
             );
           }, MidgarManager.UPLOAD_PERIOD_MS);
+        } else {
+          this.stop();
         }
       }
     );
@@ -91,9 +93,7 @@ class MidgarManager {
   }
 
   trackScreen(screen) {
-    if (this.hasBeenRemotelyEnabled) {
       this.events.push(this.createEvent(screen));
-    }
   }
 
   createEvent(screen) {
@@ -101,9 +101,6 @@ class MidgarManager {
   }
 
   shouldTrackScreen(prevState, currentState) {
-    if (!this.hasBeenRemotelyEnabled) {
-      return false;
-    }
     const currentScreen = this.manager.getActiveRouteName(currentState);
     const prevScreen = this.manager.getActiveRouteName(prevState);
 
@@ -151,7 +148,7 @@ export default class MidgarTracker {
 
   // track screen with given name
   forceTrackScreen(screen) {
-    try{
+    try {
       this.manager.trackScreen(screen);
     } catch (e) {
       console.error(e);
