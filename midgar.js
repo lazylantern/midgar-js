@@ -29,7 +29,7 @@ class MidgarApi {
 
     postRequest(endpoint, params) {
         const url = MidgarApi.BASE_URL + endpoint
-        const body = params
+        const body = JSON.stringify(params)
         const headers = {
             "Content-Type": "application/json; charset=UTF-8"
         }
@@ -89,7 +89,7 @@ class MidgarManager {
         var batch = this.events.splice(MidgarManager.MAX_UPLOAD_BATCH_SIZE)
         this.api.uploadBatch(batch).then(
             response => {
-                if (_DEV_) {
+                if (__DEV__) {
                     if (response.ok) {
                         console.log("Events successfully uploaded")
                     } else {
@@ -107,6 +107,7 @@ export default class MidgarTracker {
     init(appId) {
         this.manager = new MidgarManager(appId)
         this.manager.start()
+        return this
     }
 
     trackScreen(screen) {
