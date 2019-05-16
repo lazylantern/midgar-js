@@ -151,7 +151,7 @@ export default class MidgarTracker {
   }
 
   // track screen with given name
-  forceTrackScreen(screen) {
+  manuallyTrackScreen(screen) {
     try {
       this.manager.trackScreen(screen);
     } catch (e) {
