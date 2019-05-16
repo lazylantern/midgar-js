@@ -71,9 +71,9 @@ class MidgarManager {
               (uploadResponse) => {
                 if (__DEV__) {
                   if (uploadResponse.ok) {
-                    console.log('Events successfully uploaded');
+                    console.info('Events successfully uploaded');
                   } else {
-                    console.log('Something went wrong. Events got dropped.');
+                    console.info('Something went wrong. Events got dropped.');
                   }
                 }
               }
@@ -129,24 +129,40 @@ class MidgarManager {
 
 export default class MidgarTracker {
   init(appId) {
-    this.manager = new MidgarManager(appId);
-    this.manager.start();
+    try {
+      this.manager = new MidgarManager(appId);
+      this.manager.start();
+    } catch (e) {
+      console.error(e);
+    }
     return this;
   }
 
   // Only track screen if different from previous navigation state. Requires react-navigation
   trackScreen(prevState, currentState) {
-    if (this.manager.shouldTrackScreen(prevState, currentState)) {
-      this.manager.trackScreenFromRoute(currentState);
+    try {
+      if (this.manager.shouldTrackScreen(prevState, currentState)) {
+        this.manager.trackScreenFromRoute(currentState);
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
   // track screen with given name
   forceTrackScreen(screen) {
-    this.manager.trackScreen(screen);
+    try{
+      this.manager.trackScreen(screen);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   killSwitch() {
-    this.manager.stop();
+    try {
+      this.manager.stop();
+    } catch (e) {
+      console.error(e);
+    }
   }
 }
