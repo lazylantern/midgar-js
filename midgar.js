@@ -47,8 +47,7 @@ class MidgarApi {
 
 class MidgarManager {
 
-    events: [];
-    api: MidgarApi;
+    events = [];
     hasBeenRemotelyEnabled = false;
 
     constructor(appId){
@@ -77,7 +76,6 @@ class MidgarManager {
 }
 
 export default class MidgarTracker {
-    manager: MidgarManager;
 
     init(appId){
         this.manager = new MidgarManager(appId)
