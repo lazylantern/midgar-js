@@ -10,5 +10,20 @@
     "eslint-plugin-import": "^2.17.2",
     "eslint-plugin-jsx-a11y": "^6.2.1",
     "eslint-plugin-react": "^7.13.0"
-  }
+  },
+  "description": "Javascript Midgar SDK",
+  "main": "midgar.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lazylantern/midgar-js.git"
+  },
+  "author": "",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/lazylantern/midgar-js/issues"
+  },
+  "homepage": "https://github.com/lazylantern/midgar-js#readme"
 }
