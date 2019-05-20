@@ -1,12 +1,13 @@
 import { AppState, Platform } from 'react-native';
 
 class Event {
-  constructor(screen, platform, sdk, type, timestamp) {
+  constructor(screen, platform, sdk, type, timestamp, deviceId) {
     this.screen = screen;
     this.platform = platform;
     this.type = type;
     this.timestamp = timestamp;
     this.sdk = sdk;
+    this.deviceId = deviceId;
   }
 }
 
@@ -57,8 +58,9 @@ class MidgarManager {
 
   hasBeenRemotelyEnabled = null;
 
-  constructor(appId) {
+  constructor(appId, deviceId) {
     this.appId = appId;
+    this.deviceId = deviceId;
   }
 
   start() {
@@ -140,7 +142,7 @@ class MidgarManager {
   }
 
   createEvent(screen, type) {
-    return new Event(screen, Platform.OS, 'rn', type, new Date().getTime());
+    return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId);
   }
 
   trackAppStateChanges() {
@@ -160,7 +162,7 @@ class MidgarManager {
 }
 
 export default class MidgarTracker {
-  init(appId) {
+  init(appId, deviceId) {
     try {
       this.manager = new MidgarManager(appId);
       this.manager.start();
