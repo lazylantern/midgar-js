@@ -1,4 +1,4 @@
-import {Platform} from 'react-native';
+import { AppState, Platform } from 'react-native';
 
 class Event {
   constructor(screen, platform, sdk, type, timestamp) {
@@ -66,24 +66,7 @@ class MidgarManager {
     this.api.checkAppIsEnabled().then(
       (response) => {
         if (response.ok) {
-          this.hasBeenRemotelyEnabled = true;
-          const self = this;
-          this.timerId = setInterval(() => {
-            const batch = self.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
-            if (batch.length > 0) {
-              self.api.uploadBatch(batch).then(
-                (uploadResponse) => {
-                  if (__DEV__) {
-                    if (uploadResponse.ok) {
-                      console.info('Events successfully uploaded');
-                    } else {
-                      console.info('Something went wrong. Events got dropped.');
-                    }
-                  }
-                }
-              );
-            }
-          }, MidgarManager.UPLOAD_PERIOD_MS);
+          this.startMonitoring();
         } else {
           this.stop();
         }
@@ -91,15 +74,38 @@ class MidgarManager {
     );
   }
 
+  startMonitoring() {
+    this.trackAppStateChanges();
+    this.hasBeenRemotelyEnabled = true;
+    const self = this;
+    this.timerId = setInterval(() => {
+      const batch = self.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
+      if (batch.length > 0) {
+        self.api.uploadBatch(batch).then(
+          (uploadResponse) => {
+            if (__DEV__) {
+              if (uploadResponse.ok) {
+                console.info('Events successfully uploaded');
+              } else {
+                console.info('Something went wrong. Events got dropped.');
+              }
+            }
+          }
+        );
+      }
+    }, MidgarManager.UPLOAD_PERIOD_MS);
+  }
+
   stop() {
     this.hasBeenRemotelyEnabled = false;
+    AppState.removeEventListener('change', this.handleAppStateChanges);
     clearInterval(this.timerId);
     this.events = [];
   }
 
   trackScreen(screen) {
     if (this.isAllowedToCollectEvents()) {
-      this.events.push(this.createEvent(screen));
+      this.events.push(this.createEvent(screen, 'impression'));
     }
   }
 
@@ -113,6 +119,8 @@ class MidgarManager {
     if (prevScreen !== currentScreen) {
       this.trackScreen(this.getActiveRouteName(currentState));
     }
+
+    return true;
   }
 
   getActiveRouteName(navigationState) {
@@ -131,8 +139,18 @@ class MidgarManager {
     return this.hasBeenRemotelyEnabled == null || this.hasBeenRemotelyEnabled === true;
   }
 
-  createEvent(screen) {
-    return new Event(screen, Platform.OS, 'rn', 'impression', new Date().getTime());
+  createEvent(screen, type) {
+    return new Event(screen, Platform.OS, 'rn', type, new Date().getTime());
+  }
+
+  trackAppStateChanges() {
+    AppState.addEventListener('change', this.handleAppStateChanges);
+  }
+
+  handleAppStateChanges(nextAppState) {
+    if (nextAppState === 'background') {
+      this.events.push(this.createEvent('', 'background'));
+    }
   }
 }
 
