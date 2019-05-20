@@ -1,9 +1,12 @@
+import {Platform} from 'react-native';
+
 class Event {
-  constructor(screen, source, type, timestamp) {
+  constructor(screen, platform, sdk, type, timestamp) {
     this.screen = screen;
-    this.source = source;
+    this.platform = platform;
     this.type = type;
     this.timestamp = timestamp;
+    this.sdk = sdk;
   }
 }
 
@@ -129,7 +132,7 @@ class MidgarManager {
   }
 
   createEvent(screen) {
-    return new Event(screen, 'js', 'impression', new Date().getTime());
+    return new Event(screen, Platform.OS, 'rn', 'impression', new Date().getTime());
   }
 }
 
