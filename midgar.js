@@ -144,12 +144,17 @@ class MidgarManager {
   }
 
   trackAppStateChanges() {
-    AppState.addEventListener('change', this.handleAppStateChanges);
-  }
-
-  handleAppStateChanges(nextAppState) {
-    if (nextAppState === 'background') {
-      this.events.push(this.createEvent('', 'background'));
+    const self = this;
+    try {
+      AppState.addEventListener('change', (nextAppState) => {
+        if (nextAppState === 'background') {
+          self.events.push(this.createEvent('', 'background'));
+        } else if (nextAppState === 'active') {
+          self.events.push(this.createEvent('', 'foreground'));
+        }
+      });
+    } catch (e) {
+      console.error(e);
     }
   }
 }
