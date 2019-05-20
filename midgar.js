@@ -7,7 +7,7 @@ class Event {
     this.type = type;
     this.timestamp = timestamp;
     this.sdk = sdk;
-    this.deviceId = deviceId;
+    this.device_id = deviceId;
   }
 }
 
