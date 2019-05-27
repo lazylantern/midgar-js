@@ -65,6 +65,7 @@ class MidgarManager {
 
   start() {
     this.api = new MidgarApi(this.appId);
+    this.trackAppStateChanges();
     this.api.checkAppIsEnabled().then(
       (response) => {
         if (response.ok) {
@@ -77,25 +78,28 @@ class MidgarManager {
   }
 
   startMonitoring() {
-    this.trackAppStateChanges();
     this.hasBeenRemotelyEnabled = true;
     const self = this;
     this.timerId = setInterval(() => {
-      const batch = self.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
-      if (batch.length > 0) {
-        self.api.uploadBatch(batch).then(
-          (uploadResponse) => {
-            if (__DEV__) {
-              if (uploadResponse.ok) {
-                console.info('Events successfully uploaded');
-              } else {
-                console.info('Something went wrong. Events got dropped.');
-              }
+      this.processBatch(self);
+    }, MidgarManager.UPLOAD_PERIOD_MS);
+  }
+
+  processBatch() {
+    const batch = this.events.splice(0, MidgarManager.MAX_UPLOAD_BATCH_SIZE);
+    if (batch.length > 0) {
+      this.api.uploadBatch(batch).then(
+        (uploadResponse) => {
+          if (__DEV__) {
+            if (uploadResponse.ok) {
+              console.info('Events successfully uploaded');
+            } else {
+              console.info('Something went wrong. Events got dropped.');
             }
           }
-        );
-      }
-    }, MidgarManager.UPLOAD_PERIOD_MS);
+        }
+      );
+    }
   }
 
   stop() {
@@ -151,6 +155,10 @@ class MidgarManager {
       AppState.addEventListener('change', (nextAppState) => {
         if (nextAppState === 'background') {
           self.events.push(this.createEvent('', 'background'));
+          if (self.isAllowedToCollectEvents()) {
+            // Flush queue when we go to background as the timer will stop
+            self.processBatch();
+          }
         } else if (nextAppState === 'active') {
           self.events.push(this.createEvent('', 'foreground'));
         }
