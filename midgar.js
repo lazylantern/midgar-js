@@ -1,13 +1,14 @@
 import { AppState, Platform } from 'react-native';
 
 class Event {
-  constructor(screen, platform, sdk, type, timestamp, deviceId) {
+  constructor(screen, platform, sdk, type, timestamp, deviceId, sessionId) {
     this.screen = screen;
     this.platform = platform;
     this.type = type;
     this.timestamp = timestamp;
     this.sdk = sdk;
     this.device_id = deviceId;
+    this.session_id = sessionId;
   }
 }
 
@@ -49,12 +50,23 @@ class MidgarApi {
   }
 }
 
+function generateSessionId() {
+  const chars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv0123456789'];
+  return [...Array(10)].map(i => chars[Math.random() * chars.length | 0]).join``;
+}
+
 class MidgarManager {
   static MAX_UPLOAD_BATCH_SIZE = 10;
 
-  static UPLOAD_PERIOD_MS = 60 * 1000;
+  static UPLOAD_PERIOD_MS = 60 * 1000; // 1 minute
+
+  static SESSION_MAX_LENGTH_MS = 10 * 60 * 1000; // 10 minutes
 
   events = [];
+
+  sessionId = null;
+
+  timeOfLastBackgroundEvent = Number.MAX_SAFE_INTEGER
 
   hasBeenRemotelyEnabled = null;
 
@@ -109,6 +121,18 @@ class MidgarManager {
     this.events = [];
   }
 
+  checkSessionIdValidity() {
+    return new Date().getTime() - this.timeOfLastBackgroundEvent < this.SESSION_MAX_LENGTH_MS;
+  }
+
+  getSessionId() {
+    if (this.sessionId == null || !this.checkSessionIdValidity()) {
+      this.sessionId = generateSessionId();
+    }
+
+    return this.sessionId;
+  }
+
   trackScreen(screen) {
     if (this.isAllowedToCollectEvents()) {
       this.events.push(this.createEvent(screen, 'impression'));
@@ -146,7 +170,7 @@ class MidgarManager {
   }
 
   createEvent(screen, type) {
-    return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId);
+    return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId, this.getSessionId());
   }
 
   trackAppStateChanges() {
@@ -155,6 +179,7 @@ class MidgarManager {
       AppState.addEventListener('change', (nextAppState) => {
         if (nextAppState === 'background') {
           self.events.push(this.createEvent('', 'background'));
+          self.timeOfLastBackgroundEvent = new Date().getTime();
           if (self.isAllowedToCollectEvents()) {
             // Flush queue when we go to background as the timer will stop
             self.processBatch();
