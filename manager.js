@@ -1,6 +1,7 @@
 import { AppState, Platform } from 'react-native';
 import Event from './models/event';
 import MidgarApi from './api';
+import Context from './contextBuilder';
 
 function generateSessionId() {
   const chars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv0123456789'];
@@ -122,7 +123,7 @@ export default class MidgarManager {
     }
 
     createEvent(screen, type) {
-      return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId, this.getSessionId());
+      return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId, this.getSessionId(), Context);
     }
 
     trackAppStateChanges() {
