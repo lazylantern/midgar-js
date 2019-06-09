@@ -5,7 +5,7 @@ import Context from './contextBuilder';
 
 function generateSessionId() {
   const chars = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv0123456789'];
-  return [...Array(10)].map(i => chars[Math.random() * chars.length | 0]).join``;
+  return [...Array(6)].map(i => chars[Math.random() * chars.length | 0]).join``;
 }
 
 export default class MidgarManager {
