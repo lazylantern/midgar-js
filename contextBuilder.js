@@ -3,6 +3,7 @@ import Context from './models/context';
 
 function buildContext() {
   return new Context(
+    getUniqueId(),
     getApplicationName(),
     getVersionName(),
     getVersionCode(),
@@ -12,6 +13,10 @@ function buildContext() {
     getDeviceManufacturer(),
     isEmulator()
   );
+}
+
+function getUniqueId() {
+  return DeviceInfo.getUniqueID();
 }
 
 function getApplicationName() {

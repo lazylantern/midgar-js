@@ -23,9 +23,8 @@ export default class MidgarManager {
 
     hasBeenRemotelyEnabled = null;
 
-    constructor(appId, deviceId) {
+    constructor(appId) {
       this.appId = appId;
-      this.deviceId = deviceId;
     }
 
     start() {
@@ -123,7 +122,7 @@ export default class MidgarManager {
     }
 
     createEvent(screen, type) {
-      return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.deviceId, this.getSessionId(), Context);
+      return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.getSessionId(), Context);
     }
 
     trackAppStateChanges() {
