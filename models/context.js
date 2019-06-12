@@ -1,6 +1,7 @@
 export default class Context {
-  constructor(appName, versionName, versionCode, osVersion,
+  constructor(deviceId, appName, versionName, versionCode, osVersion,
     deviceCountry, model, manufacturer, isEmulator) {
+    this.device_id = deviceId;
     this.app_name = appName;
     this.version_name = versionName;
     this.version_code = versionCode;

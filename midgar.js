@@ -1,9 +1,9 @@
 import MidgarManager from './manager';
 
 export default class MidgarTracker {
-  init(appId, deviceId) {
+  init(appId) {
     try {
-      this.manager = new MidgarManager(appId, deviceId);
+      this.manager = new MidgarManager(appId);
       this.manager.start();
     } catch (e) {
       console.error(e);
