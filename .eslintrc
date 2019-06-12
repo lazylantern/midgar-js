@@ -1,14 +1,22 @@
 {
-    "extends": "airbnb",
-    "parser": "babel-eslint",
+    "extends": [
+        "airbnb",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:import/typescript"
+    ],
+    "plugins": ["@typescript-eslint", "react", "react-native"],
+    "parser": "@typescript-eslint/parser",
     "env": {
-        "jest": true
+        "browser": true
     },
     "rules": {
         "no-use-before-define": "off",
         "react/jsx-filename-extension": "off",
         "react/prop-types": "off",
-        "comma-dangle": "off"
+        "comma-dangle": "off",
+        "lines-between-class-members": "off",
+        "camelcase": "off",
+        "class-methods-use-this": "off"
     },
     "globals": {
         "fetch": false

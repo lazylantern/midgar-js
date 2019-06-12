@@ -29,7 +29,7 @@ yarn add midgar-js
 Then, instantiate the tracker in a high level component, ideally the one where you also instantiate your `react-navigation` AppContainer.
 
 ```$javascript
-const midgarTracker = new Midgar().init(YOUR_APP_ID);
+const midgarTracker = new Midgar(YOUR_APP_ID).init();
 ```
 
 Finally, create a method that you pass to the `onNavigationStateChange` props of your `AppContainer`:
