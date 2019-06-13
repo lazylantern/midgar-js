@@ -59,22 +59,25 @@ export default class MidgarManager {
     }
 
     public trackScreenFromRoute(prevState: NavigationState, currentState: NavigationState) {
-        if (!this.isAllowedToCollectEvents()) {
-            return false;
-        }
-        const currentScreen = this.getActiveRouteName(currentState);
-        const prevScreen = this.getActiveRouteName(prevState);
+        try {
+            if (!this.isAllowedToCollectEvents()) {
+                return false;
+            }
+            const currentScreen = this.getActiveRouteName(currentState);
+            const prevScreen = this.getActiveRouteName(prevState);
 
-        if (prevScreen !== currentScreen) {
-            this.trackScreen(this.getActiveRouteName(currentState));
-        }
+            if (prevScreen !== currentScreen) {
+                this.trackScreen(this.getActiveRouteName(currentState));
+            }
 
-        return true;
+            return true;
+        } catch (e) {
+            console.warn(e);
+        }
     }
 
     private startMonitoring() {
         this.hasBeenKilled = false;
-        const self = this;
         this.timerId = setInterval(() => {
             this.processBatch();
         }, MidgarManager.UPLOAD_PERIOD_MS);
@@ -111,16 +114,21 @@ export default class MidgarManager {
     }
 
     private getActiveRouteName(navigationState: NavigationState) {
+        if (navigationState == null) {
+            return '';
+        }
         return this.getActiveRouteNameFromRoute(navigationState.routes[navigationState.index]);
     }
 
     private getActiveRouteNameFromRoute(navigationRoute: NavigationRoute): string {
-        const route = navigationRoute.routes[navigationRoute.index];
-        // dive into nested navigators
-        if (route.routes) {
-            return this.getActiveRouteNameFromRoute(route);
+        if (navigationRoute == null) {
+            return '';
         }
-        return route.routeName;
+        // dive into nested navigators
+        if (navigationRoute.routes) {
+            return this.getActiveRouteNameFromRoute(navigationRoute.routes[navigationRoute.index]);
+        }
+        return navigationRoute.routeName;
     }
 
     private isAllowedToCollectEvents() {
@@ -147,7 +155,7 @@ export default class MidgarManager {
                 }
             });
         } catch (e) {
-            console.error(e);
+            console.warn(e);
         }
     }
 }
