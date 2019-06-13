@@ -58,7 +58,8 @@ export default class MidgarManager {
         }
     }
 
-    public trackScreenFromRoute(prevState: NavigationState, currentState: NavigationState) {
+    public trackScreenFromRoute(prevState: NavigationState,
+        currentState: NavigationState): boolean {
         try {
             if (!this.isAllowedToCollectEvents()) {
                 return false;
@@ -73,6 +74,7 @@ export default class MidgarManager {
             return true;
         } catch (e) {
             console.warn(e);
+            return false;
         }
     }
 
