@@ -3,7 +3,7 @@ import { NavigationRoute, NavigationState } from 'react-navigation';
 import { AppState, Platform } from 'react-native';
 import Event from './models/event';
 import MidgarApi from './api';
-import Context from './contextBuilder';
+import ContextBuilder from './builders';
 
 function generateSessionId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuv0123456789';
@@ -138,7 +138,8 @@ export default class MidgarManager {
     }
 
     private createEvent(screen: string, type: string) {
-        return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.getSessionId(), Context);
+        return new Event(screen, Platform.OS, 'rn', type, new Date().getTime(), this.getSessionId(),
+            ContextBuilder().buildContext());
     }
 
     private trackAppStateChanges() {
