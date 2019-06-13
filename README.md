@@ -3,7 +3,7 @@
 UX Tracker SDK from Lazy Lantern for React Native. 
 
 ## Requirements
- - `react-native` >= `0.41`
+ - `react-native` >= `0.54.x`
  - `react-navigation` `2.x` or `3.x`
  - `react-native-device-info` `2.x`
  
@@ -11,7 +11,8 @@ UX Tracker SDK from Lazy Lantern for React Native.
  
  This module has been tested on Android (API >= 21) and iOS (10 and above).
  
- So far, we only support apps built with `react-navigation`. Upcoming versions will remove this dependency and work on any type of React Native apps.
+ **So far, we only support apps built with `react-navigation`. Upcoming versions will remove this dependency and work on any type of React Native apps.**
+ That means you must follow the installation steps and integrate with `react-navigation`'s `onNavigationStateChange` to feed the SDK with navigation events.
  
  ## Integration
 First, add the module to your project:
@@ -28,14 +29,23 @@ yarn add midgar-js
 
 Then, instantiate the tracker in a high level component, ideally the one where you also instantiate your `react-navigation` AppContainer.
 
-```$javascript
-const midgarTracker = new Midgar(YOUR_APP_ID).init();
+```$js
+import Midgar from 'midgar-js';
+
+Midgar.init(YOUR_APP_ID);
 ```
 
-Finally, create a method that you pass to the `onNavigationStateChange` props of your `AppContainer`:
+Finally, create a callback that you pass to the `onNavigationStateChange` prop of your `AppContainer` or `StackNavigator`:
+See [here](https://reactnavigation.org/docs/en/app-containers.html#onnavigationstatechangeprevstate-newstate-action) for more documentation on this callback.
 
-```$javascript
- onNavigationStateChange={(prevState, currentState) => { midgarTracker.trackScreen(prevState, currentState); }}
+```$js
+const AppContainer = createAppContainer(...)
+...
+ <AppContainer
+            onNavigationStateChange={(prevState, currentState) => {
+                Midgar.trackScreen(prevState, currentState);
+            }}
+        />
 ```
 
 That's it! The tracker is ready to work. 
