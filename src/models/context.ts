@@ -1,17 +1,16 @@
 export default class Context {
-    public device_id: string | undefined;
-    public app_name: string | undefined;
-    public version_name: string | undefined;
-    public version_code: string | undefined;
-    public os_version: string | undefined;
-    public device_country: string | undefined;
-    public model: string | undefined;
-    public manufacturer: string | undefined;
-    public is_emulator: boolean | undefined;
-    public constructor(deviceId: string | undefined, appName: string | undefined, versionName: string | undefined,
-                       versionCode: string | undefined, osVersion: string | undefined,
-                       deviceCountry: string | undefined, model: string | undefined, manufacturer: string | undefined,
-                       isEmulator: boolean | undefined) {
+    public device_id: string;
+    public app_name: string;
+    public version_name: string;
+    public version_code: string;
+    public os_version: string;
+    public device_country: string;
+    public model: string;
+    public manufacturer: string;
+    public is_emulator: boolean;
+    public constructor(deviceId: string, appName: string, versionName: string, versionCode: string,
+        osVersion: string, deviceCountry: string, model: string, manufacturer: string,
+        isEmulator: boolean) {
         this.device_id = deviceId;
         this.app_name = appName;
         this.version_name = versionName;
