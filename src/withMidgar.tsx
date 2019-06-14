@@ -13,10 +13,6 @@ const withExtendedContainer = <P extends object>(NavContainer: NavigationContain
                 // @ts-ignore
                 routeName = this.state.nav.routes[0].routeName
             } catch (e) { }
-            //For react-navigation 3.x:
-            try {
-
-            } catch (e) { }
             MidgarTracker.manuallyTrackScreen(routeName);
         }
 
