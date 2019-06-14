@@ -17,19 +17,19 @@ UX Tracker SDK from Lazy Lantern for React Native.
  ## Integration
 First, add the module to your project:
 
-```$bash
+```bash
 npm install midgar-js
 ```
 
 or
 
-```$bash
+```bash
 yarn add midgar-js
 ```
 
 Then, instantiate the tracker in a high level component, ideally the one where you also instantiate your `react-navigation` AppContainer.
 
-```$js
+```javascript
 import Midgar from 'midgar-js';
 
 Midgar.init(YOUR_APP_ID);
@@ -37,7 +37,7 @@ Midgar.init(YOUR_APP_ID);
 
 Finally, wrap your `AppContainer` component in the `withMidgar` HoC:
 
-```$js
+```javascript
 const AppContainer = withMidgar(createAppContainer(...))
 ```
 
