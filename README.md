@@ -35,10 +35,16 @@ import Midgar from 'midgar-js';
 Midgar.init(YOUR_APP_ID);
 ```
 
-Finally, wrap your `AppContainer` component in the `withMidgar` HoC:
+Finally, wrap your `AppContainer` or `StackNavigator` component in the `withMidgar` HoC:
 
 ```javascript
 const AppContainer = withMidgar(createAppContainer(...))
+```
+
+or
+
+```javascript
+const rootStack = withMidgar(createStackNavigator(...))
 ```
 
 That's it! The tracker is ready to work. 

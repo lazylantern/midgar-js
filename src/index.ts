@@ -1,7 +1,7 @@
 import Midgar from './midgar'
-import WithMidgar from './withMidgar'
+import withMidgar from './withMidgar'
 
 export {
     Midgar,
-    WithMidgar,
+    withMidgar,
 }
