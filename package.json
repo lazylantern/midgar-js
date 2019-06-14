@@ -1,8 +1,8 @@
 {
   "name": "midgar-js",
-  "version": "0.4.0",
+  "version": "1.0.0-rc.1",
   "peerDependencies": {
-    "react": ">=15.4.0 || >=16.0.0",
+    "react": ">=16.0.0",
     "react-native": ">=0.54.0",
     "react-native-device-info": ">=2.0.0",
     "react-navigation": ">= 2.0.0 || >=3.0.0"
