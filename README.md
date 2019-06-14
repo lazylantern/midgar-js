@@ -35,17 +35,14 @@ import Midgar from 'midgar-js';
 Midgar.init(YOUR_APP_ID);
 ```
 
-Finally, create a callback that you pass to the `onNavigationStateChange` prop of your `AppContainer` or `StackNavigator`:
-See [here](https://reactnavigation.org/docs/en/app-containers.html#onnavigationstatechangeprevstate-newstate-action) for more documentation on this callback.
+Finally, wrap your `AppContainer` component in the `withMidgar` HoC:
 
 ```$js
-const AppContainer = createAppContainer(...)
-...
- <AppContainer
-            onNavigationStateChange={(prevState, currentState) => {
-                Midgar.trackScreen(prevState, currentState);
-            }}
-        />
+const AppContainer = withMidgar(createAppContainer(...))
 ```
 
 That's it! The tracker is ready to work. 
+
+### Notes
+ - If you are not using `react-native-device-info` in your project yet, you must follow [instructions](https://www.npmjs.com/package/react-native-device-info) on how to integrate. 
+ - `react-native-device-info` requires to be linked to the native projects. This happens automatically when you follow the installation procedure of the package. This means the midgar sdk **will not work on non-ejected Expo apps**.
